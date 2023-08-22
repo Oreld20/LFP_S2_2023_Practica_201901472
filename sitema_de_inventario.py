@@ -19,49 +19,60 @@ def Menu():
         print("---------------------------")
         print("Cargar inventario inicial")
         print("---------------------------")
-        inventario.cargar_inventario(f'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\inventario.inv')
+        inventario.cargar_inventario(r'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\inventario.inv')
+        print("--------------------------------------------------------")
         print("Inventario inicial cargado con exito")
+        print("--------------------------------------------------------")
+        inventario.mostrar_productos()
+        print("--------------------------------------------------------")
         Menu()
         
     
     elif opcion == "2":
         print("---------------------------")
         print("Cargar instrucciones de movimientos")
+        with open(r'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\movimiento.txt', 'a') as coso:
+            coso.write('')
         movimiento = input("Ingrese el moviento que desea hacer:")
         name = input("ingrese el nombre de el producto:")
         cantida= input("ingrese la cantidad de el producto:")
-        price = input("ingrese la cantidad de el precio unitario:")
         ubication = input("ingrese la ubicacion de el producto:")
-        with open(f'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\movimiento.txt', 'a') as archivo:
-            archivo.write('')
-            archivo.write(f'\n{movimiento} {name};{cantida};{price};{ubication}')
+        
 
-        with open(f'{ruta}', 'r') as file:
+        with open(r'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\movimiento.txt', 'w') as archi:
+            archi.write(f'{movimiento};{name};{cantida};{ubication}')
+
+        with open(r'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\movimiento.txt', 'r') as file:
             lineas = file.readlines()
 
         for linea in lineas:
-            instruccion, resto = linea.strip().split(' ', 1)
-            if instruccion == 'agregar_stock':
-                nombre, cantidad, ubicacion = resto.split(';')
-                exito = inventario.agregar_stock(nombre, cantidad, ubicacion)
-                if exito:
-                    with open(f'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\movimientos.mov', 'a') as archivo:
-                        archivo.write(f'\n{movimiento} {name};{cantida};{price};{ubication}')
-                    print(f"Se agregaron {cantidad} unidades de {nombre} en {ubicacion}")
-                else:
-                    print(f"Error: Producto no encontrado en {ubicacion}")
+            if linea.strip():
+                separador = linea.split(';')
+                instruccion = separador[0]
+                nombre= separador[1]
+                cantidad = int(separador[2])
+                ubicacion = separador[3]
+                if instruccion == 'agregar_stock':
+                    exito = inventario.agregar_stock(nombre, cantidad, ubicacion)
+                    if exito:
+                        with open(r'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\movimientos.mov', 'a') as moviento_añadir:
+                            moviento_añadir.write(f'{movimiento};{name};{cantida};{ubication}'+ '\n')
+                        print("--------------------------------------------------------")
+                        print(f"Se agregaron {cantidad} unidades de {nombre} en {ubicacion}")
+                        print("--------------------------------------------------------")
+                    else:
+                        print(f"Error: Producto no encontrado en {ubicacion}")
 
-            elif instruccion == 'vender_producto':
-                nombre, cantidad, ubicacion = resto.split(';')
-                exito = inventario.vender_producto(nombre, cantidad, ubicacion)
-                if exito:
-                    with open(f'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\movimientos.mov', 'a') as archivo:
-                        archivo.write(f'\n{movimiento} {name};{cantida};{price};{ubication}')
-                    print(f"Se vendieron {cantidad} unidades de {nombre} en {ubicacion}")
-                else:
-                    print("Error: No se pudo vender el producto")
-        print("---------------------------")
-        print("movimiento cargado")
+                elif instruccion == 'vender_producto':
+                    exito = inventario.vender_producto(nombre, cantidad, ubicacion)
+                    if exito:
+                        with open(r'C:\Users\eliot\OneDrive\Escritorio\Documentos\Practica#1_LFP\movimientos.mov', 'a') as moviento_vender:
+                            moviento_vender.write(f'{movimiento};{name};{cantida};{ubication}'+ '\n')
+                        print("--------------------------------------------------------")
+                        print(f"Se vendieron {cantidad} unidades de {nombre} en {ubicacion}")
+                        print("--------------------------------------------------------")
+                    else:
+                        print("Error: No se pudo vender el producto")
         Menu()
     
     
